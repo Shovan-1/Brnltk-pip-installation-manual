@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>brnltk — Python Package Manual</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #30363d;
+    --accent: #f78166;
+    --accent2: #79c0ff;
+    --accent3: #56d364;
+    --accent4: #e3b341;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --code-bg: #0d1117;
+    --tag-bg: #1f2937;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 40%, #1a1f2e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 64px 40px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(247,129,102,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px 3px 8px;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid;
+  }
+
+  .badge-green { background: rgba(86,211,100,0.1); border-color: rgba(86,211,100,0.3); color: var(--accent3); }
+  .badge-blue  { background: rgba(121,192,255,0.1); border-color: rgba(121,192,255,0.3); color: var(--accent2); }
+  .badge-yellow{ background: rgba(227,179,65,0.1);  border-color: rgba(227,179,65,0.3);  color: var(--accent4); }
+  .badge-red   { background: rgba(247,129,102,0.1); border-color: rgba(247,129,102,0.3); color: var(--accent); }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.6rem, 6vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 span { color: var(--accent); }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 600px;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .install-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    position: relative;
+  }
+
+  .install-box .prompt { color: var(--accent3); }
+  .install-box .cmd    { color: var(--text); }
+  .install-box .pkg    { color: var(--accent2); }
+  .install-box .ver    { color: var(--accent4); }
+
+  .copy-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+    margin-left: 8px;
+  }
+
+  .copy-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* LAYOUT */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    max-width: 1100px;
+    margin: 0 auto;
+    gap: 0;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 32px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+
+  .sidebar nav a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+
+  .sidebar nav a:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .sidebar nav a.active {
+    background: rgba(247,129,102,0.1);
+    color: var(--accent);
+  }
+
+  .sidebar-icon { font-size: 14px; }
+
+  .sidebar-group { margin-top: 20px; }
+
+  /* CONTENT */
+  .content {
+    padding: 40px 48px;
+    max-width: 800px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 56px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 32px; height: 32px;
+    background: rgba(247,129,102,0.12);
+    border: 1px solid rgba(247,129,102,0.25);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+  }
+
+  .section h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .section h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent2);
+    margin-bottom: 10px;
+    margin-top: 24px;
+  }
+
+  p { color: var(--muted); margin-bottom: 14px; }
+  p strong { color: var(--text); }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+    position: relative;
+  }
+
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .code-copy {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    transition: all 0.2s;
+  }
+
+  .code-copy:hover { color: var(--accent); border-color: var(--accent); }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  /* Syntax colors */
+  .kw  { color: #ff7b72; }  /* keyword */
+  .fn  { color: #d2a8ff; }  /* function */
+  .st  { color: #a5d6ff; }  /* string */
+  .cm  { color: #8b949e; font-style: italic; } /* comment */
+  .nu  { color: #79c0ff; }  /* number */
+  .cl  { color: #ffa657; }  /* class */
+  .op  { color: #e3b341; }  /* operator/symbol */
+  .pm  { color: var(--accent3); }  /* parameter */
+  .ou  { color: var(--accent3); }  /* output */
+
+  /* OUTPUT BLOCK */
+  .output-block {
+    background: #0a1628;
+    border: 1px solid rgba(86,211,100,0.2);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 8px 0 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent3);
+    line-height: 1.8;
+  }
+
+  .output-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* INFO CARD */
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .info-card.warn { border-left-color: var(--accent4); }
+  .info-card.tip  { border-left-color: var(--accent3); }
+
+  .info-card strong { color: var(--text); display: block; margin-bottom: 4px; }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin: 16px 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  thead {
+    background: var(--surface);
+  }
+
+  th {
+    padding: 12px 16px;
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 11px 16px;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    color: var(--muted);
+  }
+
+  td:first-child { color: var(--accent2); font-family: 'JetBrains Mono', monospace; font-size: 12.5px; }
+  td.hl { color: var(--accent3); font-weight: 500; }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* MODULE CARD */
+  .module-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .module-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .module-card:hover { border-color: var(--accent); }
+
+  .module-card .icon { font-size: 22px; margin-bottom: 8px; }
+
+  .module-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .module-card p {
+    font-size: 12px;
+    margin: 0;
+  }
+
+  .module-card code {
+    display: block;
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent4);
+    background: var(--code-bg);
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  /* PARAM TABLE */
+  .param-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 12px 0;
+  }
+
+  .param-table td {
+    padding: 8px 12px;
+    vertical-align: top;
+  }
+
+  .param-table td:first-child {
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    white-space: nowrap;
+    width: 140px;
+  }
+
+  .param-table td:nth-child(2) {
+    color: var(--accent4);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    width: 100px;
+  }
+
+  .param-table td:nth-child(3) { color: var(--muted); }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+
+  .footer a { color: var(--accent2); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* INLINE CODE */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--surface2);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--accent2);
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 0;
+  }
+
+  /* SCROLL BAR */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .content { padding: 24px 20px; }
+    .module-grid { grid-template-columns: 1fr; }
+    .hero { padding: 40px 20px 32px; }
+    .footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="badge-row">
+      <span class="badge badge-green">● v3.2.2 stable</span>
+      <span class="badge badge-blue">Python ≥ 3.6</span>
+      <span class="badge badge-yellow">MIT License</span>
+      <span class="badge badge-red">5 Dialects</span>
+    </div>
+    <h1><span>brn</span>ltk</h1>
+    <p class="hero-sub">Bangla Regional Natural Language Toolkit — the first open-source Python package for POS tagging, dialect translation, stemming, tokenization, and semantic similarity across Bangla regional dialects.</p>
+    <div class="install-box">
+      <span class="prompt">$</span>
+      <span class="cmd">pip install </span><span class="pkg">brnltk</span><span class="ver">==3.2.2</span>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText('pip install brnltk==3.2.2'); this.textContent='✓ copied'; setTimeout(()=>this.textContent='copy',1500)">copy</button>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Contents</div>
+    <nav>
+      <a href="#overview" class="active"><span class="sidebar-icon">◈</span> Overview</a>
+      <a href="#install"><span class="sidebar-icon">⬇</span> Installation</a>
+
+      <div class="sidebar-group">
+        <div class="sidebar-title" style="margin-top:8px">Modules</div>
+        <a href="#translate"><span class="sidebar-icon">🌐</span> Dialect Translator</a>
+        <a href="#pos"><span class="sidebar-icon">🏷</span> POS Tagger</a>
+        <a href="#stemmer"><span class="sidebar-icon">✂</span> Stemmer</a>
+        <a href="#tokenizer"><span class="sidebar-icon">◉</span> Tokenizer</a>
+        <a href="#similarity"><span class="sidebar-icon">≈</span> Similarity</a>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-title" style="margin-top:8px">Reference</div>
+        <a href="#dialects"><span class="sidebar-icon">🗺</span> Dialect Map</a>
+        <a href="#performance"><span class="sidebar-icon">📊</span> Performance</a>
+        <a href="#errors"><span class="sidebar-icon">⚠</span> Troubleshooting</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+
+    <!-- OVERVIEW -->
+    <section class="section" id="overview">
+      <div class="section-header">
+        <div class="section-icon">◈</div>
+        <h2>Overview</h2>
+      </div>
+
+      <p><strong>brnltk</strong> (Bangla Regional NLTK) is a modular, training-free Python toolkit designed for processing Bangla regional dialects. Built on top of the <strong>PritomBangla</strong> human-verified dataset, it combines rule-based linguistics, N-gram statistical matching, and a BiLSTM neural model to cover five major dialect regions.</p>
+
+      <div class="module-grid">
+        <div class="module-card">
+          <div class="icon">🌐</div>
+          <h4>Dialect Translator</h4>
+          <p>Convert text between any two Bangla dialect regions using N-gram similarity and word mapping.</p>
+          <code>from brnltk import translate</code>
+        </div>
+        <div class="module-card">
+          <div class="icon">🏷</div>
+          <h4>POS Tagger</h4>
+          <p>BiLSTM-powered Part-of-Speech tagging with dictionary fallback for all five dialects.</p>
+          <code>from brnltk import run_pos_tagger</code>
+        </div>
+        <div class="module-card">
+          <div class="icon">✂</div>
+          <h4>Stemmer</h4>
+          <p>Rule-based suffix stripping to reduce Bangla words to their root canonical form.</p>
+          <code>from brnltk import stem_sentence</code>
+        </div>
+        <div class="module-card">
+          <div class="icon">◉</div>
+          <h4>Tokenizer</h4>
+          <p>Regex-based word and sentence tokenizer that preserves Bangla-specific punctuation.</p>
+          <code>from brnltk import word_tokenize</code>
+        </div>
+      </div>
+
+      <div class="info-card tip">
+        <strong>Zero-training design</strong>
+        All modules work out-of-the-box — no training data or model fine-tuning required. The POS tagger ships with a pre-trained BiLSTM model for each dialect.
+      </div>
+    </section>
+
+    <!-- INSTALLATION -->
+    <section class="section" id="install">
+      <div class="section-header">
+        <div class="section-icon">⬇</div>
+        <h2>Installation</h2>
+      </div>
+
+      <h3>Standard Install</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">BASH</span><button class="code-copy" onclick="navigator.clipboard.writeText('pip install brnltk'); this.textContent='✓';setTimeout(()=>this.textContent='copy',1500)">copy</button></div>
+        <pre><span class="pm">$</span> pip install brnltk</pre>
+      </div>
+
+      <h3>Pinned Version (recommended for reproducibility)</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">BASH</span><button class="code-copy" onclick="navigator.clipboard.writeText('pip install brnltk==3.2.2'); this.textContent='✓';setTimeout(()=>this.textContent='copy',1500)">copy</button></div>
+        <pre><span class="pm">$</span> pip install <span class="st">brnltk==3.2.2</span></pre>
+      </div>
+
+      <h3>Virtual Environment (best practice)</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">BASH</span></div>
+        <pre><span class="pm">$</span> python -m venv .venv
+<span class="pm">$</span> source .venv/bin/activate      <span class="cm"># Windows: .venv\Scripts\activate</span>
+<span class="pm">$</span> pip install brnltk==3.2.2</pre>
+      </div>
+
+      <h3>Google Colab / Jupyter</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span></div>
+        <pre><span class="op">!</span>pip install <span class="st">brnltk==3.2.2</span></pre>
+      </div>
+
+      <h3>Verify Installation</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span></div>
+        <pre><span class="kw">import</span> brnltk
+<span class="fn">print</span>(brnltk.__version__)</pre>
+      </div>
+      <div class="output-block"><div class="output-label">output</div>3.2.2</div>
+
+      <div class="info-card warn">
+        <strong>Requirement: Python ≥ 3.6</strong>
+        brnltk depends on TensorFlow/Keras for the BiLSTM POS model. Ensure your environment has TensorFlow installed. It will be installed automatically as a dependency.
+      </div>
+    </section>
+
+    <!-- DIALECT TRANSLATOR -->
+    <section class="section" id="translate">
+      <div class="section-header">
+        <div class="section-icon">🌐</div>
+        <h2>Dialect Translator</h2>
+      </div>
+
+      <p>The <code>translate()</code> function converts a Bangla sentence from one dialect region to another. It uses <strong>N-gram similarity</strong> to find matching words in the source dialect, then maps them to the target dialect via the PritomBangla dataset.</p>
+
+      <h3>Signature</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span></div>
+        <pre><span class="kw">from</span> brnltk <span class="kw">import</span> translate
+
+result = <span class="fn">translate</span>(
+    sentence=<span class="st">"আমি ভাত খাই"</span>,
+    from_area=<span class="st">"General"</span>,
+    to_area=<span class="st">"Chittagong"</span>
+)</pre>
+      </div>
+
+      <h3>Parameters</h3>
+      <table class="param-table">
+        <tr><td>sentence</td><td>str</td><td>Input Bangla text to translate</td></tr>
+        <tr><td>from_area</td><td>str</td><td>Source dialect key (see dialect map below)</td></tr>
+        <tr><td>to_area</td><td>str</td><td>Target dialect key</td></tr>
+      </table>
+
+      <h3>Full Example</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span><button class="code-copy" onclick="navigator.clipboard.writeText(`from brnltk import translate\n\noriginal = "আমি ভাত খাই"\ntranslated = translate(\n    sentence=original,\n    from_area="General",\n    to_area="Chittagong"\n)\n\nprint("Original:  ", original)\nprint("Translated:", translated)`); this.textContent='✓';setTimeout(()=>this.textContent='copy',1500)">copy</button></div>
+        <pre><span class="kw">from</span> brnltk <span class="kw">import</span> translate
+
+original   = <span class="st">"আমি ভাত খাই"</span>
+translated = <span class="fn">translate</span>(
+    sentence=original,
+    from_area=<span class="st">"General"</span>,
+    to_area=<span class="st">"Chittagong"</span>
+)
+
+<span class="fn">print</span>(<span class="st">"Original:  "</span>, original)
+<span class="fn">print</span>(<span class="st">"Translated:"</span>, translated)</pre>
+      </div>
+      <div class="output-block">
+        <div class="output-label">output</div>
+Original:   আমি ভাত খাই<br>
+Translated: আঁই ভাত হাই
+      </div>
+
+      <h3>Translate Between Non-Standard Dialects</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span></div>
+        <pre><span class="cm"># Barishal → Sylhet (dialect-to-dialect, not via General)</span>
+result = <span class="fn">translate</span>(
+    sentence=<span class="st">"তুমি কই যাও"</span>,
+    from_area=<span class="st">"Barishal"</span>,
+    to_area=<span class="st">"Sylhet"</span>
+)
+<span class="fn">print</span>(result)</pre>
+      </div>
+
+      <div class="info-card">
+        <strong>💡 Tip — Best Translation Accuracy</strong>
+        Use <code>"General"</code> as the source dialect when translating from Standard Colloquial Bangla (SCB). Mymensingh and Barishal achieve the highest BLEU scores (~70+ and ~60+) due to closer lexical proximity to SCB.
+      </div>
+    </section>
+
+    <!-- POS TAGGER -->
+    <section class="section" id="pos">
+      <div class="section-header">
+        <div class="section-icon">🏷</div>
+        <h2>Regional POS Tagger</h2>
+      </div>
+
+      <p>The <code>run_pos_tagger()</code> function loads a <strong>pre-trained BiLSTM model</strong> for the selected dialect and returns a prediction function. Supported POS tags are: <strong>বিশেষ্য</strong> (Noun), <strong>সর্বনাম</strong> (Pronoun), <strong>ক্রিয়া</strong> (Verb), <strong>বিশেষণ</strong> (Adjective), <strong>অব্যয়</strong> (Adverb).</p>
+
+      <h3>Signature</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span></div>
+        <pre>predict_func, encoder, model = <span class="fn">run_pos_tagger</span>(
+    column_name=<span class="st">"Mymensingh"</span>,   <span class="cm"># dialect key</span>
+    train=<span class="nu">True</span>                   <span class="cm"># load pre-trained weights</span>
+)</pre>
+      </div>
+
+      <h3>Parameters</h3>
+      <table class="param-table">
+        <tr><td>column_name</td><td>str</td><td>Dialect region key (must match AREA_MAPPING)</td></tr>
+        <tr><td>train</td><td>bool</td><td>Set <code>True</code> to use the shipped pre-trained model</td></tr>
+      </table>
+
+      <h3>Basic POS Tagging</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span><button class="code-copy" onclick="navigator.clipboard.writeText(`from brnltk import run_pos_tagger\n\npredict_func, _, _ = run_pos_tagger(column_name='Mymensingh', train=True)\n\nsentence = "তুমি কেমন আছ"\nresult = predict_func(sentence, return_confidence=True)\n\nfor word, tag, conf in result:\n    print(f"{word:<15} --> {tag:<12} (confidence: {conf:.2f})")`); this.textContent='✓';setTimeout(()=>this.textContent='copy',1500)">copy</button></div>
+        <pre><span class="kw">from</span> brnltk <span class="kw">import</span> run_pos_tagger
+
+predict_func, _, _ = <span class="fn">run_pos_tagger</span>(
+    column_name=<span class="st">'Mymensingh'</span>,
+    train=<span class="nu">True</span>
+)
+
+sentence = <span class="st">"তুমি কেমন আছ"</span>
+result   = <span class="fn">predict_func</span>(sentence, return_confidence=<span class="nu">True</span>)
+
+<span class="kw">for</span> word, tag, conf <span class="kw">in</span> result:
+    <span class="fn">print</span>(<span class="st">f"{word:&lt;15} --> {tag:&lt;12} (confidence: {conf:.2f})"</span>)</pre>
+      </div>
+      <div class="output-block">
+        <div class="output-label">output</div>
+তুমি           --> সর্বনাম     (confidence: 1.00)<br>
+কেমন           --> বিশেষণ      (confidence: 1.00)<br>
+আছ             --> ক্রিয়া      (confidence: 1.00)
+      </div>
+
+      <h3>Tag Multiple Sentences in a Loop</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span></div>
+        <pre>sentences = [
+    <span class="st">"আমি বাজারে যাই"</span>,
+    <span class="st">"সে ভালো মানুষ"</span>,
+]
+
+<span class="kw">for</span> sent <span class="kw">in</span> sentences:
+    tagged = <span class="fn">predict_func</span>(sent, return_confidence=<span class="nu">False</span>)
+    <span class="fn">print</span>(sent, <span class="st">"→"</span>, [(w, t) <span class="kw">for</span> w, t <span class="kw">in</span> tagged])</pre>
+      </div>
+
+      <div class="info-card">
+        <strong>⚡ Performance Note</strong>
+        Call <code>run_pos_tagger()</code> once per session and reuse the returned <code>predict_func</code>. Reloading the BiLSTM model on every prediction is slow.
+      </div>
+    </section>
+
+    <!-- STEMMER -->
+    <section class="section" id="stemmer">
+      <div class="section-header">
+        <div class="section-icon">✂</div>
+        <h2>Stemmer</h2>
+      </div>
+
+      <p>The stemmer strips common Bangla grammatical suffixes (verb endings, plural markers, possessive endings, emphasis markers) to return the base root form. It is rule-based and requires no training.</p>
+
+      <h3>stem_sentence — full sentence</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span><button class="code-copy" onclick="navigator.clipboard.writeText(`from brnltk import stem_sentence\n\nsentence = \"ছেলেটি ভাত খাচ্ছে\"\nstemmed  = stem_sentence(sentence)\nprint(\"Stemmed:\", stemmed)`); this.textContent='✓';setTimeout(()=>this.textContent='copy',1500)">copy</button></div>
+        <pre><span class="kw">from</span> brnltk <span class="kw">import</span> stem_sentence
+
+sentence = <span class="st">"ছেলেটি ভাত খাচ্ছে"</span>
+stemmed  = <span class="fn">stem_sentence</span>(sentence)
+<span class="fn">print</span>(<span class="st">"Stemmed:"</span>, stemmed)</pre>
+      </div>
+      <div class="output-block">
+        <div class="output-label">output</div>
+Stemmed: ছেল ভাত খা
+      </div>
+
+      <h3>Stem individual words</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span></div>
+        <pre><span class="kw">from</span> brnltk <span class="kw">import</span> word_tokenize, stem_sentence
+
+words   = <span class="fn">word_tokenize</span>(<span class="st">"ছেলেটি খেলাধুলা করছিল"</span>)
+stemmed = [<span class="fn">stem_sentence</span>(w) <span class="kw">for</span> w <span class="kw">in</span> words]
+<span class="fn">print</span>(<span class="fn">list</span>(<span class="fn">zip</span>(words, stemmed)))</pre>
+      </div>
+
+      <div class="info-card">
+        <strong>📌 Use Case</strong>
+        Run stemming <em>before</em> similarity checking or text classification to normalize dialectal word variation across regions.
+      </div>
+    </section>
+
+    <!-- TOKENIZER -->
+    <section class="section" id="tokenizer">
+      <div class="section-header">
+        <div class="section-icon">◉</div>
+        <h2>Tokenizer</h2>
+      </div>
+
+      <p>The tokenizer splits Bangla text into word tokens while correctly handling Unicode punctuation, danda (।), and whitespace. Use it as a preprocessing step before translation, POS tagging, or stemming.</p>
+
+      <h3>word_tokenize</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span><button class="code-copy" onclick="navigator.clipboard.writeText(`from brnltk import word_tokenize\n\ntext   = \"আমি ভাত খাই এবং কাজ করি।\"\ntokens = word_tokenize(text)\nprint(\"Tokens:\", tokens)`); this.textContent='✓';setTimeout(()=>this.textContent='copy',1500)">copy</button></div>
+        <pre><span class="kw">from</span> brnltk <span class="kw">import</span> word_tokenize
+
+text   = <span class="st">"আমি ভাত খাই এবং কাজ করি।"</span>
+tokens = <span class="fn">word_tokenize</span>(text)
+<span class="fn">print</span>(<span class="st">"Tokens:"</span>, tokens)</pre>
+      </div>
+      <div class="output-block">
+        <div class="output-label">output</div>
+Tokens: ['আমি', 'ভাত', 'খাই', 'এবং', 'কাজ', 'করি', '।']
+      </div>
+
+      <h3>Tokenize then Tag</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span></div>
+        <pre><span class="kw">from</span> brnltk <span class="kw">import</span> word_tokenize, run_pos_tagger
+
+predict_func, _, _ = <span class="fn">run_pos_tagger</span>(<span class="st">'Barishal'</span>, train=<span class="nu">True</span>)
+
+text   = <span class="st">"সে বাজারে গেছে"</span>
+tokens = <span class="fn">word_tokenize</span>(text)
+tagged = <span class="fn">predict_func</span>(<span class="st">' '</span>.join(tokens), return_confidence=<span class="nu">True</span>)
+
+<span class="kw">for</span> w, t, c <span class="kw">in</span> tagged:
+    <span class="fn">print</span>(<span class="st">f"  {w} → {t} ({c:.0%})"</span>)</pre>
+      </div>
+    </section>
+
+    <!-- SIMILARITY -->
+    <section class="section" id="similarity">
+      <div class="section-header">
+        <div class="section-icon">≈</div>
+        <h2>Similarity Checker</h2>
+      </div>
+
+      <p>The <code>overall_similarity()</code> function computes a semantic similarity score between two Bangla sentences using <strong>TF-IDF vectorization</strong> combined with <strong>N-gram cosine similarity</strong>. Score ranges from <code>0.0</code> (no overlap) to <code>1.0</code> (identical).</p>
+
+      <h3>Basic Usage</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span><button class="code-copy" onclick="navigator.clipboard.writeText(`from brnltk import overall_similarity\n\ns1 = \"আমি আজ স্কুলে যাই\"\ns2 = \"আমি স্কুলে যাচ্ছি আজ\"\n\nscore = overall_similarity(s1, s2)\nprint(f\"Similarity Score: {score:.2f}\")`); this.textContent='✓';setTimeout(()=>this.textContent='copy',1500)">copy</button></div>
+        <pre><span class="kw">from</span> brnltk <span class="kw">import</span> overall_similarity
+
+s1 = <span class="st">"আমি আজ স্কুলে যাই"</span>
+s2 = <span class="st">"আমি স্কুলে যাচ্ছি আজ"</span>
+
+score = <span class="fn">overall_similarity</span>(s1, s2)
+<span class="fn">print</span>(<span class="st">f"Similarity Score: {score:.2f}"</span>)</pre>
+      </div>
+      <div class="output-block">
+        <div class="output-label">output</div>
+Similarity Score: 0.72
+      </div>
+
+      <h3>Compare Translations</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span></div>
+        <pre><span class="kw">from</span> brnltk <span class="kw">import</span> translate, overall_similarity
+
+original   = <span class="st">"আমি ভাত খাই"</span>
+translated = <span class="fn">translate</span>(original, <span class="st">"General"</span>, <span class="st">"Barishal"</span>)
+
+score = <span class="fn">overall_similarity</span>(original, translated)
+<span class="fn">print</span>(<span class="st">f"Semantic Drift: {<span class="nu">1</span> - score:.2%}"</span>)</pre>
+      </div>
+
+      <div class="info-card">
+        <strong>Score Interpretation</strong>
+        <code>1.0</code> = identical &nbsp;|&nbsp; <code>≥0.8</code> = highly similar &nbsp;|&nbsp; <code>0.5–0.8</code> = related &nbsp;|&nbsp; <code>&lt;0.5</code> = divergent
+      </div>
+    </section>
+
+    <!-- DIALECT MAP -->
+    <section class="section" id="dialects">
+      <div class="section-header">
+        <div class="section-icon">🗺</div>
+        <h2>Dialect Reference Map</h2>
+      </div>
+
+      <p>Use these exact keys in the <code>from_area</code>, <code>to_area</code>, and <code>column_name</code> parameters. They map to dataset columns in the PritomBangla corpus.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Key (use this)</th><th>Region</th><th>Dataset Column</th><th>Trans. Accuracy</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>General</td><td>Standard Colloquial Bangla</td><td>General</td><td class="hl">—</td></tr>
+            <tr><td>Mymensingh</td><td>Mymensingh</td><td>Mymensingh_bangla_speech</td><td class="hl">91%</td></tr>
+            <tr><td>Barishal</td><td>Barishal</td><td>Barishal_bangla_speech</td><td class="hl">85%</td></tr>
+            <tr><td>Chittagong</td><td>Chattogram / Chittagong</td><td>Chittagong_bangla_speech</td><td class="hl">75%</td></tr>
+            <tr><td>Noakhali</td><td>Noakhali</td><td>Noakhali_bangla_speech</td><td class="hl">59%</td></tr>
+            <tr><td>Sylhet</td><td>Sylhet</td><td>Sylhet_bangla_speech</td><td class="hl">47%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="info-card warn">
+        <strong>⚠ Case-Sensitive Keys</strong>
+        Keys are case-sensitive. <code>"Chittagong"</code> is correct; <code>"chittagong"</code> or <code>"Chattogram"</code> will raise a KeyError.
+      </div>
+    </section>
+
+    <!-- PERFORMANCE -->
+    <section class="section" id="performance">
+      <div class="section-header">
+        <div class="section-icon">📊</div>
+        <h2>Performance Benchmarks</h2>
+      </div>
+
+      <h3>POS Tagging Accuracy by Region</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Region</th><th>Accuracy</th><th>Noun F1</th><th>Verb F1</th><th>Adj. F1</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Mymensingh</td><td class="hl">95.8%</td><td>1.00</td><td>0.86</td><td>0.89</td></tr>
+            <tr><td>Barishal</td><td class="hl">96.0%</td><td>1.00</td><td>0.86</td><td>0.70</td></tr>
+            <tr><td>Sylhet</td><td class="hl">96.0%</td><td>1.00</td><td>0.87</td><td>0.91</td></tr>
+            <tr><td>Noakhali</td><td class="hl">95.7%</td><td>1.00</td><td>0.87</td><td>0.70</td></tr>
+            <tr><td>Chattogram</td><td class="hl">94.0%</td><td>1.00</td><td>0.85</td><td>0.18</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin-top:6px;font-size:13px;">Nouns are consistently perfect across all regions (F1 = 1.00). Adjective tagging for Chattogram is currently weak — a known limitation under active improvement.</p>
+    </section>
+
+    <!-- TROUBLESHOOTING -->
+    <section class="section" id="errors">
+      <div class="section-header">
+        <div class="section-icon">⚠</div>
+        <h2>Troubleshooting</h2>
+      </div>
+
+      <h3>ModuleNotFoundError: No module named 'brnltk'</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">BASH</span></div>
+        <pre><span class="cm"># Make sure you're in the correct Python environment</span>
+<span class="pm">$</span> which python         <span class="cm"># or: python --version</span>
+<span class="pm">$</span> pip install brnltk   <span class="cm"># reinstall</span></pre>
+      </div>
+
+      <h3>KeyError on dialect name</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span></div>
+        <pre><span class="cm"># WRONG</span>
+translate(sentence, from_area=<span class="st">"chattogram"</span>, ...)   <span class="cm"># lowercase → KeyError</span>
+
+<span class="cm"># CORRECT</span>
+translate(sentence, from_area=<span class="st">"Chittagong"</span>, ...)   <span class="cm"># exact key</span></pre>
+      </div>
+
+      <h3>Model Warning on first POS load</h3>
+      <div class="output-block" style="color: var(--accent4);">
+        <div class="output-label">warning (expected — safe to ignore)</div>
+WARNING:absl:Compiled the loaded model, but the compiled metrics have yet to be built. `model` object...
+      </div>
+      <p>This is a Keras/TensorFlow version mismatch warning. It does not affect predictions. Suppress it with:</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">PYTHON</span></div>
+        <pre><span class="kw">import</span> os
+os.environ[<span class="st">"TF_CPP_MIN_LOG_LEVEL"</span>] = <span class="st">"3"</span>  <span class="cm"># before importing brnltk</span>
+<span class="kw">import</span> brnltk</pre>
+      </div>
+
+      <h3>Slow first prediction</h3>
+      <p>The BiLSTM model is loaded on the first call to <code>run_pos_tagger()</code>. Subsequent calls in the same session reuse the loaded model and are fast. Cache the <code>predict_func</code> variable.</p>
+    </section>
+
+    <!-- QUICK REFERENCE -->
+    <section class="section" id="quickref">
+      <div class="section-header">
+        <div class="section-icon">⚡</div>
+        <h2>Quick Reference</h2>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Task</th><th>Import</th><th>Call</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Translate dialect</td><td><code>from brnltk import translate</code></td><td><code>translate(sentence, from_area, to_area)</code></td></tr>
+            <tr><td>Load POS tagger</td><td><code>from brnltk import run_pos_tagger</code></td><td><code>run_pos_tagger(column_name, train=True)</code></td></tr>
+            <tr><td>Stem a sentence</td><td><code>from brnltk import stem_sentence</code></td><td><code>stem_sentence(sentence)</code></td></tr>
+            <tr><td>Tokenize text</td><td><code>from brnltk import word_tokenize</code></td><td><code>word_tokenize(text)</code></td></tr>
+            <tr><td>Semantic similarity</td><td><code>from brnltk import overall_similarity</code></td><td><code>overall_similarity(s1, s2)</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <div style="display:flex; gap: 20px; flex-wrap:wrap; margin-bottom: 40px;">
+      <a href="https://pypi.org/project/brnltk/" style="color:var(--accent2); text-decoration:none; font-size:13px; border: 1px solid var(--border); padding: 8px 14px; border-radius: 6px; transition: border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)'">📦 PyPI Package</a>
+      <a href="https://github.com/ShakirHaque/BRNLTK/" style="color:var(--accent2); text-decoration:none; font-size:13px; border: 1px solid var(--border); padding: 8px 14px; border-radius: 6px;" onmouseover="this.style.borderColor='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)'">⭐ GitHub Source</a>
+      <a href="https://doi.org/10.5281/zenodo.16890200" style="color:var(--accent2); text-decoration:none; font-size:13px; border: 1px solid var(--border); padding: 8px 14px; border-radius: 6px;" onmouseover="this.style.borderColor='var(--accent2)'" onmouseout="this.style.borderColor='var(--border)'">📄 PritomBangla Dataset</a>
+    </div>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div>
+    <strong style="color:var(--text)">brnltk</strong> v3.2.2 &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; American International University-Bangladesh · 2025
+  </div>
+  <div style="display:flex; gap: 20px; flex-wrap:wrap; justify-content:flex-end; margin-top:8px;">
+    <span style="color:var(--muted); font-size:12px;">✉ Contact:</span>
+    <a href="mailto:mahmudulhaqueshakir@gmail.com" title="Mahmudul Haque Shakir">Shakir &nbsp;<span style="color:var(--muted)">21-45016-2@student.aiub.edu</span></a>
+    <a href="mailto:22-47547-2@student.aiub.edu" title="Sunipun Seemanta">Seemanta &nbsp;<span style="color:var(--muted)">22-47547-2@student.aiub.edu</span></a>
+    <a href="mailto:21-45047-2@student.aiub.edu" title="Shovan Roy">Shovan &nbsp;<span style="color:var(--muted)">21-45047-2@student.aiub.edu</span></a>
+  </div>
+</footer>
+
+<script>
+  // Highlight active sidebar link on scroll
+  const sections = document.querySelectorAll('.section');
+  const links    = document.querySelectorAll('.sidebar nav a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const match = document.querySelector(`.sidebar nav a[href="#${e.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { threshold: 0.4 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
